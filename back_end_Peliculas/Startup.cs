@@ -1,6 +1,5 @@
 using back_end_Peliculas.Controllers;
 using back_end_Peliculas.Filtros;
-using back_end_Peliculas.Repositorios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,17 +31,15 @@ namespace back_end_Peliculas
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                var frontend_Url = Configuration.GetValue<string>("frontend_url"); // tomamos la url del config
+            options.AddDefaultPolicy(builder => //comunicacion cors entre dominios para ello habiltamos //este es el error  https://localhost:44385/api/generos (razón: falta la cabecera CORS 'Access-Control-Allow-Origin') 
+            {
+                builder.WithOrigins(frontend_Url).AllowAnyMethod().AllowAnyHeader(); 
+            });
+        });
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
-
-            services.AddResponseCaching(); // activicamos el caché
-            //services.AddTransient<IRepositorio,RepositorioEnMemoria>(); //Siempre se retonarna distintantas instancias -configuracion de inyección de dependencias
-            // services.AddSingleton<IRepositorio, RepositorioEnMemoria>(); //configuracion de inyección de dependencias
-            services.AddScoped<IRepositorio, RepositorioEnMemoria>(); //configuracion de inyección de dependencias
-            services.AddScoped<WeatherForecastController>();
-
-            services.AddTransient<MiFiltroDeAccion>();
-
             services.AddControllers(options =>{
                 options.Filters.Add(typeof(FiltroDeExcepcion));// aqui voy a agregar mi filtro global
             }); 
@@ -54,38 +51,9 @@ namespace back_end_Peliculas
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
-            ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //por lo general los USE no terminan el proceso de middleware
-            app.Use(async (context, next) =>  
-            {
-                using (var swapStream = new MemoryStream())
-                {
-                    var respuestaOriginal = context.Response.Body;
-                    context.Response.Body = swapStream;
-                    await next.Invoke();
-
-                    swapStream.Seek(0, SeekOrigin.Begin);
-                    string respuesta = new StreamReader(swapStream).ReadToEnd();
-                    swapStream.Seek(0, SeekOrigin.Begin);
-
-                    await swapStream.CopyToAsync(respuestaOriginal);
-                    context.Response.Body = respuestaOriginal;
-
-                    logger.LogInformation(respuesta); //guardamos en un log la respuesta http.
-                }
-            });
-            app.Map("/mapa1", (app) =>   // permiti que la peticion http solo se haga cuando sea con /mapa1
-            {
-                app.Run(async context => { //terminar la peticion 
-
-                    await context.Response.WriteAsync("Estoy intecertando el pipeline o tubería");
-                });
-
-            });
            
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -97,7 +65,7 @@ namespace back_end_Peliculas
 
             app.UseRouting();
 
-            app.UseResponseCaching(); // debe usarse antes del MapController
+            app.UseCors(); // middleware para la comunicacio de dominiios en proyectos web
 
             app.UseAuthentication(); // antes de autorizacion
 
