@@ -1,4 +1,5 @@
 using back_end_Peliculas.Controllers;
+using back_end_Peliculas.Filtros;
 using back_end_Peliculas.Repositorios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,7 @@ namespace back_end_Peliculas
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
             services.AddResponseCaching(); // activicamos el caché
@@ -38,7 +40,13 @@ namespace back_end_Peliculas
             // services.AddSingleton<IRepositorio, RepositorioEnMemoria>(); //configuracion de inyección de dependencias
             services.AddScoped<IRepositorio, RepositorioEnMemoria>(); //configuracion de inyección de dependencias
             services.AddScoped<WeatherForecastController>();
-            services.AddControllers();
+
+            services.AddTransient<MiFiltroDeAccion>();
+
+            services.AddControllers(options =>{
+                options.Filters.Add(typeof(FiltroDeExcepcion));// aqui voy a agregar mi filtro global
+            }); 
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back_end_Peliculas", Version = "v1" });

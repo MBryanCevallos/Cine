@@ -1,4 +1,5 @@
 ﻿using back_end_Peliculas.Entidades;
+using back_end_Peliculas.Filtros;
 using back_end_Peliculas.Repositorios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,16 +15,16 @@ namespace back_end_Peliculas.Controllers
 {
     [Route("api/generos")] //endpoint, también podría estar "api/[controller]"
     [ApiController] // para no usar en cada metodo http adRequest(ModelState); para cuando haya un error
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // autotizacion de autenticacion
-    public class GenerosController: ControllerBase //metodo auxiliar
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // autotizacion de autenticacion a nivel de todo el controlador
+    public class GenerosController : ControllerBase //metodo auxiliar
     {
         private readonly IRepositorio repositorio;
         private readonly WeatherForecastController weatherForecastController;
         private readonly ILogger<GenerosController> logger;
 
-        public GenerosController(IRepositorio repositorio, 
+        public GenerosController(IRepositorio repositorio,
             WeatherForecastController weatherForecastController,//Control. crea y asgina repositorio
-            ILogger <GenerosController> logger) // inyectamos iLOGGER)  y click derencho iniciarliazar como un campo
+            ILogger<GenerosController> logger) // inyectamos iLOGGER)  y click derencho iniciarliazar como un campo
         {
             this.repositorio = repositorio;
             this.weatherForecastController = weatherForecastController;
@@ -37,9 +38,11 @@ namespace back_end_Peliculas.Controllers
         [HttpGet("/listadogeneros")]  //quedarias asi /listadogeneros xq el / no toma en cuenta este api/generos
         //[ResponseCache(Duration =60)] //tiempo de duraci{on del caché  - capa de caché
        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // autotizacion de autenticacion
+
+        [ServiceFilter(typeof(MiFiltroDeAccion))] // inicializa un servicio y sus dependencias
         public ActionResult<List<Genero>> Get() //tambien puedo usar ations result en una lista
         {
-            logger.LogInformation("vamos a mostrar los gérneros");
+            logger.LogInformation("vamos a mostrar los géneros");
             return repositorio.ObtenerTodosLosGeneros();
         }
         //[HttpGet("{id}")]//quedaría asi "api/generos/id" y mediante postman enviamos en el query string el id quedando asi https://localhost:44385/api/generos/id?id=2 o podemos directamente enviar la variable en la urlasi "{id}  quedandon asi https://localhost:44385/api/generos/1"
@@ -50,14 +53,15 @@ namespace back_end_Peliculas.Controllers
         public async Task<ActionResult<Genero>> Get(int id, [FromHeader] string nombre) // actionResult es para que funcione notfound() = 404  // async task y a wait es para usar un metodo asincrono   // BindRequired parametro obligatorio // no obligatorio FromHeader
         {
             logger.LogDebug($"obtenidendo un género por el ID : {id}"); // $ es string inteporlation
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }             
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}             
 
             var genero = await repositorio.ObtenerPorId(id);
             if (genero ==null)
             {
+                throw new ApplicationException($"El genero de ID {id} no fue encontrado");
                 logger.LogWarning($"No pudimos encontrar el género de ID {id}");
                 return NotFound();
             }
