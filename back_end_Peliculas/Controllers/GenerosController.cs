@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace back_end_Peliculas.Controllers
 {
-    [Route("api/generos")] //endpoint, también podría estar "api/[controller]"
+    [Route("api/generos")] //endpoint, también podría estar "api/[controller]" hola
     [ApiController] // para no usar en cada metodo http adRequest(ModelState); para cuando haya un error
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // autotizacion de autenticacion a nivel de todo el controlador
     public class GenerosController : ControllerBase //metodo auxiliar
