@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,27 +19,30 @@ namespace back_end_Peliculas.Controllers
     public class GenerosController : ControllerBase //metodo auxiliar
     {
         private readonly ILogger<GenerosController> logger;
+        private readonly ApplicationDbContext context;
 
         public GenerosController(            
-            ILogger<GenerosController> logger) // inyectamos iLOGGER)  y click derencho iniciarliazar como un campo
+            ILogger<GenerosController> logger // inyectamos iLOGGER)  y click derencho iniciarliazar como un campo
+            , ApplicationDbContext context)  // asignar como un campo clic derecho
         {
            
             this.logger = logger;  //iniciailazamos logger como un campo 
-
+            this.context = context; // se crea aqui
         }
 
         //accion que se ejcuta cuando se hace una petición http al end point
         [HttpGet] //metodo http get
-        public ActionResult<List<Genero>> Get() //tambien puedo usar ations result en una lista
+        public async Task<ActionResult<List<Genero>>> Get() //tambien puedo usar ations result en una lista
         {
-            return new List<Genero>() { new Genero() { id = 1, Nombre = "Comedia" } };
+            // return new List<Genero>() { new Genero() { Id = 1, Nombre = "Comedia" } };
+            return await context.Generos.ToListAsync(); // asincrono
         }
         //[HttpGet("{id}")]//quedaría asi "api/generos/id" y mediante postman enviamos en el query string el id quedando asi https://localhost:44385/api/generos/id?id=2 o podemos directamente enviar la variable en la urlasi "{id}  quedandon asi https://localhost:44385/api/generos/1"
         //[HttpGet("{id}/{nombre}")]// ejemplo con mas de un parámetro quedaría asi "api/generos/1/marlon
         //[HttpGet("{id:int}/{nombre=marlon}")]// ejemplo cuando se requiere definir el tipo de parametro {id: int} y tambien de puede enviar el valor del paramtro por defecto {nombre=marlon}
                                              // public Genero Get(int id, string nombre) // retorna una acción especifica
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Genero>> Get(int id) // actionResult es para que funcione notfound() = 404  // async task y a wait es para usar un metodo asincrono   // BindRequired parametro obligatorio // no obligatorio FromHeader
+        [HttpGet("{Id:int}")]
+        public async Task<ActionResult<Genero>> Get(int Id) // actionResult es para que funcione notfound() = 404  // async task y a wait es para usar un metodo asincrono   // BindRequired parametro obligatorio // no obligatorio FromHeader
         {
             throw new NotImplementedException();
         }

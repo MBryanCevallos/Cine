@@ -10,7 +10,7 @@ namespace back_end_Peliculas.Entidades
     public class Genero
     {
         // este remplazará a la tabla genero
-        public int id { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage ="El campo {0} es requerido")]
         [StringLength(maximumLength: 10)]
         [PrimeraLetraMayuscula]// validacion por atributo
