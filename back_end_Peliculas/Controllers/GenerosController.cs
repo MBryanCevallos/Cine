@@ -1,4 +1,6 @@
-﻿using back_end_Peliculas.Entidades;
+﻿using AutoMapper;
+using back_end_Peliculas.DTOs;
+using back_end_Peliculas.Entidades;
 using back_end_Peliculas.Filtros;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -20,22 +22,28 @@ namespace back_end_Peliculas.Controllers
     {
         private readonly ILogger<GenerosController> logger;
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
         public GenerosController(            
             ILogger<GenerosController> logger // inyectamos iLOGGER)  y click derencho iniciarliazar como un campo
-            , ApplicationDbContext context)  // asignar como un campo clic derecho
+            , ApplicationDbContext context // asignar como un campo clic derecho
+            , IMapper mapper)  
         {
            
             this.logger = logger;  //iniciailazamos logger como un campo 
             this.context = context; // se crea aqui
+            this.mapper = mapper;
         }
 
         //accion que se ejcuta cuando se hace una petición http al end point
         [HttpGet] //metodo http get
-        public async Task<ActionResult<List<Genero>>> Get() //tambien puedo usar ations result en una lista
+        public async Task<ActionResult<List<GeneroDTO>>> Get() //tambien puedo usar ations result en una lista
         {
             // return new List<Genero>() { new Genero() { Id = 1, Nombre = "Comedia" } };
-            return await context.Generos.ToListAsync(); // asincrono
+            //return await context.Generos.ToListAsync(); // asincrono
+            var generos = await context.Generos.ToListAsync();
+            return mapper.Map<List<GeneroDTO>>(generos); // automapper 
+
         }
         //[HttpGet("{id}")]//quedaría asi "api/generos/id" y mediante postman enviamos en el query string el id quedando asi https://localhost:44385/api/generos/id?id=2 o podemos directamente enviar la variable en la urlasi "{id}  quedandon asi https://localhost:44385/api/generos/1"
         //[HttpGet("{id}/{nombre}")]// ejemplo con mas de un parámetro quedaría asi "api/generos/1/marlon
@@ -48,9 +56,13 @@ namespace back_end_Peliculas.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] Genero genero) // se cambia el void por action result asi public void Post -- retorna un 404
+        public async Task<ActionResult> Post([FromBody] GeneroCreacioDTO generoCreacionDto) // se cambia el void por action result asi public void Post -- retorna un 404
         {
-            throw new NotImplementedException();
+            var genero = mapper.Map<Genero>(generoCreacionDto);
+            //throw new NotImplementedException();
+            context.Add(genero);
+            await context.SaveChangesAsync();
+            return NoContent();
         }
         [HttpPut]
         public ActionResult Put([FromBody] Genero genero) //FromBody se usa para formularios generalmente en post y put

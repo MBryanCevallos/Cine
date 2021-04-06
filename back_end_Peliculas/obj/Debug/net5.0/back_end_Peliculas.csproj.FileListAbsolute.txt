@@ -65,3 +65,6 @@ D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debu
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\ref\back_end_Peliculas.dll
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.pdb
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.genruntimeconfig.cache
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.csprojAssemblyReference.cache
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\AutoMapper.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

@@ -12,7 +12,7 @@ namespace back_end_Peliculas.Entidades
         // este remplazará a la tabla genero
         public int Id { get; set; }
         [Required(ErrorMessage ="El campo {0} es requerido")]
-        [StringLength(maximumLength: 10)]
+        [StringLength(maximumLength: 50)]
         [PrimeraLetraMayuscula]// validacion por atributo
         public string Nombre { get; set; }
         //[Range(18, 120)]
