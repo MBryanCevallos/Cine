@@ -42,7 +42,8 @@ namespace back_end_Peliculas
                 var frontend_Url = Configuration.GetValue<string>("frontend_url"); // tomamos la url del config
             options.AddDefaultPolicy(builder => //comunicacion cors entre dominios para ello habiltamos //este es el error  https://localhost:44385/api/generos (razón: falta la cabecera CORS 'Access-Control-Allow-Origin') 
             {
-                builder.WithOrigins(frontend_Url).AllowAnyMethod().AllowAnyHeader(); 
+                builder.WithOrigins(frontend_Url).AllowAnyMethod().AllowAnyHeader()
+                .WithExposedHeaders(new string[] { "cantidadtotalRegistros" }); //activar cabeceras para paginacion para que el front end pueda visualizar
             });
         });
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();

@@ -12,7 +12,7 @@ namespace back_end_Peliculas.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {

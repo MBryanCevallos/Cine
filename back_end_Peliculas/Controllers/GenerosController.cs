@@ -2,6 +2,7 @@
 using back_end_Peliculas.DTOs;
 using back_end_Peliculas.Entidades;
 using back_end_Peliculas.Filtros;
+using back_end_Peliculas.Utilidades;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,12 +38,19 @@ namespace back_end_Peliculas.Controllers
 
         //accion que se ejcuta cuando se hace una petición http al end point
         [HttpGet] //metodo http get
-        public async Task<ActionResult<List<GeneroDTO>>> Get() //tambien puedo usar ations result en una lista
+        public async Task<ActionResult<List<GeneroDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO) //tambien puedo usar ations result en una lista
         {
             // return new List<Genero>() { new Genero() { Id = 1, Nombre = "Comedia" } };
             //return await context.Generos.ToListAsync(); // asincrono
-            var generos = await context.Generos.ToListAsync();
-            return mapper.Map<List<GeneroDTO>>(generos); // automapper 
+
+            //Obtiene la lista sin paginacion
+            //var generos = await context.Generos.ToListAsync();
+            //return mapper.Map<List<GeneroDTO>>(generos); // automapper 
+
+            var queryable = context.Generos.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable);
+            var generos = await queryable.OrderBy(x => x.Nombre).Paginar(paginacionDTO).ToListAsync(); // asincrono 
+            return mapper.Map<List<GeneroDTO>>(generos);
 
         }
         //[HttpGet("{id}")]//quedaría asi "api/generos/id" y mediante postman enviamos en el query string el id quedando asi https://localhost:44385/api/generos/id?id=2 o podemos directamente enviar la variable en la urlasi "{id}  quedandon asi https://localhost:44385/api/generos/1"
