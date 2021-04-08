@@ -22,11 +22,11 @@ namespace back_end_Peliculas.Controllers
             this.mapper = mapper;
         }
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ActorCreacionDTO actorCreacionDTO)
+        public async Task<ActionResult> Post([FromForm] ActorCreacionDTO actorCreacionDTO) // cambiamos FromBody por FromForm para enviar la foto
         {
-            var actor = mapper.Map<Actor>(actorCreacionDTO);
-            context.Add(actor);
-            await context.SaveChangesAsync();
+            //var actor = mapper.Map<Actor>(actorCreacionDTO);
+            //context.Add(actor);
+            //await context.SaveChangesAsync();
             return NoContent();
         }
     }
