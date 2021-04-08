@@ -14,5 +14,6 @@ namespace back_end_Peliculas
         }
 
         public DbSet<Genero> Generos { get; set; } // DbSet es par indicar que tablas quiero en mi BDD / calse Genero y nombre de la tabla Generos
+        public DbSet<Actor> Actores { get; set; }
     }
 }

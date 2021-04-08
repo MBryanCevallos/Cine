@@ -10,7 +10,7 @@ namespace back_end_Peliculas.DTOs
     public class GeneroCreacioDTO
     {
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [StringLength(maximumLength: 50)]
+        [StringLength(maximumLength: 100)]
         [PrimeraLetraMayuscula]// validacion por atributo
         public string Nombre { get; set; }
     }
