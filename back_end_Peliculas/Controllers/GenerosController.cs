@@ -58,9 +58,14 @@ namespace back_end_Peliculas.Controllers
         //[HttpGet("{id:int}/{nombre=marlon}")]// ejemplo cuando se requiere definir el tipo de parametro {id: int} y tambien de puede enviar el valor del paramtro por defecto {nombre=marlon}
                                              // public Genero Get(int id, string nombre) // retorna una acción especifica
         [HttpGet("{Id:int}")]
-        public async Task<ActionResult<Genero>> Get(int Id) // actionResult es para que funcione notfound() = 404  // async task y a wait es para usar un metodo asincrono   // BindRequired parametro obligatorio // no obligatorio FromHeader
+        public async Task<ActionResult<GeneroDTO>> Get(int Id) // actionResult es para que funcione notfound() = 404  // async task y a wait es para usar un metodo asincrono   // BindRequired parametro obligatorio // no obligatorio FromHeader
         {
-            throw new NotImplementedException();
+            var genero = await context.Generos.FirstOrDefaultAsync(x => x.Id == Id);
+            if (genero == null)
+            {
+                return NotFound(); // retorna un 404
+            }
+            return mapper.Map<GeneroDTO>(genero);
         }
 
         [HttpPost]
@@ -72,10 +77,17 @@ namespace back_end_Peliculas.Controllers
             await context.SaveChangesAsync();
             return NoContent();
         }
-        [HttpPut]
-        public ActionResult Put([FromBody] Genero genero) //FromBody se usa para formularios generalmente en post y put
+        [HttpPut("{Id:int}")] // put para actualizar
+        public async Task<ActionResult> Put(int Id, [FromBody] GeneroCreacioDTO generoCreacioDTO) //FromBody se usa para formularios generalmente en post y put
         {
-            throw new NotImplementedException();
+            var genero = await context.Generos.FirstOrDefaultAsync(x => x.Id == Id);
+            if (genero == null)
+            {
+                return NotFound(); // retorna un 404
+            }
+            genero = mapper.Map(generoCreacioDTO, genero);
+            await context.SaveChangesAsync();
+            return NoContent();
         }
         [HttpDelete]
         public ActionResult Delete()
