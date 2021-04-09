@@ -35,7 +35,10 @@ namespace back_end_Peliculas
         {
             services.AddAutoMapper(typeof(Startup)); // libreria automapper
 
-            services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage
+            //services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage para foto en azure
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>(); // para foto localmente
+            
+            services.AddHttpContextAccessor(); // para foto localmente - tamien se debe agreagr
 
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
@@ -72,6 +75,8 @@ namespace back_end_Peliculas
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles(); // widdelWare archivos estaticos
 
             app.UseRouting();
 
