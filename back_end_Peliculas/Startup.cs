@@ -1,5 +1,6 @@
 using back_end_Peliculas.Controllers;
 using back_end_Peliculas.Filtros;
+using back_end_Peliculas.Utilidades;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,8 @@ namespace back_end_Peliculas
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup)); // libreria automapper
+
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage
 
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));

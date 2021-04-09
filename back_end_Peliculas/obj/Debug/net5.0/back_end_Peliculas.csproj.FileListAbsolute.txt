@@ -68,3 +68,7 @@ D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debu
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.csprojAssemblyReference.cache
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\AutoMapper.dll
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Azure.Core.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Azure.Storage.Blobs.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Azure.Storage.Common.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Microsoft.Bcl.AsyncInterfaces.dll
