@@ -3,6 +3,7 @@ using back_end_Peliculas.DTOs;
 using back_end_Peliculas.Entidades;
 using back_end_Peliculas.Utilidades;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace back_end_Peliculas.Controllers
 {
     [Route("api/actores")]
     [ApiController]
-    public class ActoresController: ControllerBase
+    public class ActoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
@@ -24,6 +25,45 @@ namespace back_end_Peliculas.Controllers
             this.mapper = mapper;
             this.almacenadorArchivos = almacenadorArchivos;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ActorDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO)
+        {
+            var queryable = context.Actores.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable);
+            var actores = await queryable.OrderBy(x => x.Nombre).Paginar(paginacionDTO).ToListAsync(); // asincrono 
+            return mapper.Map<List<ActorDTO>>(actores);
+        }
+        //obener por id el actor para editar
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ActorDTO>>Get(int id)
+        {
+            var actor = await context.Actores.FirstOrDefaultAsync(x => x.Id == id); // await asincron
+            if (actor == null)
+            {
+                return NotFound();
+            }
+            return mapper.Map<ActorDTO>(actor);
+
+        }
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromForm] ActorCreacionDTO actorCreacionDTO)
+        {
+            var actor = await context.Actores.FirstOrDefaultAsync(x => x.Id == id);
+            if (actor == null)
+            {
+                return NotFound();
+            }
+            actor = mapper.Map(actorCreacionDTO, actor);
+            if (actorCreacionDTO.Foto != null)
+            {
+                actor.Foto = await almacenadorArchivos.EditarArchivo(contenedor, actorCreacionDTO.Foto, actor.Foto);
+            }
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+        
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] ActorCreacionDTO actorCreacionDTO) // cambiamos FromBody por FromForm para enviar la foto
         {
@@ -34,6 +74,21 @@ namespace back_end_Peliculas.Controllers
             }
             context.Add(actor);
             await context.SaveChangesAsync();
+            return NoContent();
+        }
+        
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var actor = await context.Actores.FirstOrDefaultAsync(x => x.Id == id);
+            if (actor == null)
+            {
+                return NotFound();
+            }
+            context.Remove(actor);
+            await context.SaveChangesAsync();
+            await almacenadorArchivos.BorrarArchivo(actor.Foto, contenedor); // borra la foto
             return NoContent();
         }
     }

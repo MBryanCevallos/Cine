@@ -35,8 +35,8 @@ namespace back_end_Peliculas
         {
             services.AddAutoMapper(typeof(Startup)); // libreria automapper
 
-            //services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage para foto en azure
-            services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>(); // para foto localmente
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage para foto en azure
+            //services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>(); // para foto localmente
             
             services.AddHttpContextAccessor(); // para foto localmente - tamien se debe agreagr
 
