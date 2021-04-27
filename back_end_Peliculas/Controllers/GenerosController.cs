@@ -37,7 +37,7 @@ namespace back_end_Peliculas.Controllers
         }
 
         //accion que se ejcuta cuando se hace una petición http al end point
-        [HttpGet] //metodo http get
+        [HttpGet] //metodo http get Trae todos
         public async Task<ActionResult<List<GeneroDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO) //tambien puedo usar ations result en una lista
         {
             // return new List<Genero>() { new Genero() { Id = 1, Nombre = "Comedia" } };

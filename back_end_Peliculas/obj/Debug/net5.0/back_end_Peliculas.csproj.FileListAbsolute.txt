@@ -72,3 +72,7 @@ D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debu
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Azure.Storage.Blobs.dll
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Azure.Storage.Common.dll
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\NetTopologySuite.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\NetTopologySuite.IO.SqlServerBytes.dll
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\EFCoreSqlServerNetTopologySuite.cs

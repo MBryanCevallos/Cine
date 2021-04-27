@@ -1,3 +1,4 @@
+using AutoMapper;
 using back_end_Peliculas.Controllers;
 using back_end_Peliculas.Filtros;
 using back_end_Peliculas.Utilidades;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,6 +37,14 @@ namespace back_end_Peliculas
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup)); // libreria automapper
+            services.AddSingleton(provider =>
+                new MapperConfiguration(config =>
+                {
+                    var geometryFactory = provider.GetRequiredService<GeometryFactory>();
+                    config.AddProfile(new AutoMapperProfiles(geometryFactory));
+                }).CreateMapper());
+            services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326)); //nettopologySuite para captutar la posicion en el espacio
+
 
             services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage para foto en azure
             //services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>(); // para foto localmente
@@ -41,8 +52,11 @@ namespace back_end_Peliculas
             services.AddHttpContextAccessor(); // para foto localmente - tamien se debe agreagr
 
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"),
+            SqlServer => SqlServer.UseNetTopologySuite() // nettopologySuite para usar
+            ));
 
+          
             services.AddCors(options =>
             {
                 var frontend_Url = Configuration.GetValue<string>("frontend_url"); // tomamos la url del config
