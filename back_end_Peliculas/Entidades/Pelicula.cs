@@ -17,5 +17,8 @@ namespace back_end_Peliculas.Entidades
         public bool EnCines { get; set; }
         public DateTime FechaLanzamiento { get; set; }
         public string Poster { get; set; }
+        public List<PeliculasActores> PeliculasActores { get; set; } // cuando traigo una pelicula puedo traer a sus actores
+        public List<PeliculasGeneros> PeliculasGeneros { get; set; }
+        public List<PeliculasCines> peliculasCines { get; set; }
     }
 }

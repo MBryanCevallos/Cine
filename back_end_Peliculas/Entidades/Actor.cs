@@ -15,5 +15,6 @@ namespace back_end_Peliculas.Entidades
         public string Biografia { get; set; }
         public DateTime FechaNacimiento { get; set; }
         public string Foto { get; set; }
+        public List<PeliculasActores> PeliculasActores { get; set; } // traigo el actor y a su vez todas las peliculas en las que a actuado
     }
 }

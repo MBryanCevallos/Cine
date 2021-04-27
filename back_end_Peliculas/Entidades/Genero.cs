@@ -34,5 +34,6 @@ namespace back_end_Peliculas.Entidades
         //        }
         //    }
         //}
+        public List<PeliculasGeneros> PeliculasGeneros { get; set; }
     }
 }

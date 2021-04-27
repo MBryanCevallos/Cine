@@ -14,5 +14,6 @@ namespace back_end_Peliculas.Entidades
         [StringLength(maximumLength: 75)]
         public string Nombre { get; set; }
         public Point Ubicacion { get; set; }//querys espaciales - usa libreria nettopologySuite / point es para latitud y longitud
+        public List<PeliculasCines> PeliculasCines { get; set; } // trae el cine y las peliculas que tiene 
     }
 }
