@@ -47,6 +47,18 @@ namespace back_end_Peliculas.Controllers
             return mapper.Map<ActorDTO>(actor);
 
         }
+        [HttpPost("buscarPorNombre")]
+        public async Task<ActionResult<List<PeliculaActorDTO>>> BuscarPorNombre([FromBody] string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre)) // si es nulo o vacio
+            {
+                return new List<PeliculaActorDTO>();  //me retonar una nueva lista
+            }
+            return await context.Actores.Where(x => x.Nombre.Contains(nombre))
+                .Select(x => new PeliculaActorDTO { id = x.Id, Nombre = x.Nombre, Foto = x.Foto })
+                .Take(5) // solo me va a traer 5 actores
+                .ToListAsync();
+        }
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromForm] ActorCreacionDTO actorCreacionDTO)
         {
