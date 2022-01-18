@@ -46,8 +46,8 @@ namespace back_end_Peliculas
             services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326)); //nettopologySuite para captutar la posicion en el espacio
 
 
-            services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage para foto en azure
-            //services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>(); // para foto localmente
+            //services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>(); // servicio para azure storage para foto en azure
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>(); // para foto localmente
             
             services.AddHttpContextAccessor(); // para foto localmente - tamien se debe agreagr
 

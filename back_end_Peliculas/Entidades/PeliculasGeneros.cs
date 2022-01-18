@@ -11,5 +11,6 @@ namespace back_end_Peliculas.Entidades
         public int GeneroId { get; set; }
         public Pelicula Pelicula { get; set; }
         public Genero Genero { get; set; }
+        //public String Nombre { get; set; }
     }
 }
