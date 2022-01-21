@@ -25,12 +25,12 @@ namespace back_end_Peliculas.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
 
-        public GenerosController(            
+        public GenerosController(
             ILogger<GenerosController> logger // inyectamos iLOGGER)  y click derencho iniciarliazar como un campo
             , ApplicationDbContext context // asignar como un campo clic derecho
-            , IMapper mapper)  
+            , IMapper mapper)
         {
-           
+
             this.logger = logger;  //iniciailazamos logger como un campo 
             this.context = context; // se crea aqui
             this.mapper = mapper;
@@ -56,7 +56,7 @@ namespace back_end_Peliculas.Controllers
         //[HttpGet("{id}")]//quedaría asi "api/generos/id" y mediante postman enviamos en el query string el id quedando asi https://localhost:44385/api/generos/id?id=2 o podemos directamente enviar la variable en la urlasi "{id}  quedandon asi https://localhost:44385/api/generos/1"
         //[HttpGet("{id}/{nombre}")]// ejemplo con mas de un parámetro quedaría asi "api/generos/1/marlon
         //[HttpGet("{id:int}/{nombre=marlon}")]// ejemplo cuando se requiere definir el tipo de parametro {id: int} y tambien de puede enviar el valor del paramtro por defecto {nombre=marlon}
-                                             // public Genero Get(int id, string nombre) // retorna una acción especifica
+        // public Genero Get(int id, string nombre) // retorna una acción especifica
         [HttpGet("{Id:int}")]
         public async Task<ActionResult<GeneroDTO>> Get(int Id) // actionResult es para que funcione notfound() = 404  // async task y a wait es para usar un metodo asincrono   // BindRequired parametro obligatorio // no obligatorio FromHeader
         {
@@ -66,6 +66,13 @@ namespace back_end_Peliculas.Controllers
                 return NotFound(); // retorna un 404
             }
             return mapper.Map<GeneroDTO>(genero);
+        }
+
+        [HttpGet("todos")]
+        public async Task<ActionResult<List<GeneroDTO>>> Todos()
+        {
+            var generos = await context.Generos.ToListAsync();
+            return mapper.Map<List<GeneroDTO>>(generos);
         }
 
         [HttpPost]
