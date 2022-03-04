@@ -2,6 +2,9 @@
 using back_end_Peliculas.DTOs;
 using back_end_Peliculas.Entidades;
 using back_end_Peliculas.Utilidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,23 +16,28 @@ namespace back_end_Peliculas.Controllers
 {
     [ApiController]
     [Route("api/peliculas")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")] // para que solo usuario administrador puedan usar el endpoint
     public class PeliculasController: ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly UserManager<IdentityUser> userManager;
         private readonly IAlmacenadorArchivos almacenadorArchivos;
         private readonly string contenedor = "peliculas";
 
         public PeliculasController(ApplicationDbContext context, 
             IMapper mapper,
+            UserManager<IdentityUser> userManager,
             IAlmacenadorArchivos almacenadorArchivos) // para el poster
         {
             this.context = context;
             this.mapper = mapper;
+            this.userManager = userManager;
             this.almacenadorArchivos = almacenadorArchivos;
         }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<LandingPageDTO>> Get()
         {
             var top = 6;
@@ -72,6 +80,7 @@ namespace back_end_Peliculas.Controllers
         }
 
     [HttpGet("PutGet/{id:int}")] 
+    //[AllowAnonymous]
     public async Task<ActionResult<PeliculasPutGetDTO>> PutGet(int id)
         {
             var peliculaActionResult = await Get(id);
@@ -129,6 +138,7 @@ namespace back_end_Peliculas.Controllers
         }
         
     [HttpGet("{id:int}")]
+    [AllowAnonymous] // A pesar de ser autorizado se puede consultar
     public async Task<ActionResult<PeliculaDTO>> Get(int id)
         {
             var pelicula = await context.Peliculas
@@ -141,13 +151,39 @@ namespace back_end_Peliculas.Controllers
             {
                 return NotFound();
             }
+
+            //¨Promedio y votaciones
+            var promedioVoto = 0.0;
+            var usuarioVoto = 0;
+            if (await context.Rating.AnyAsync(x => x.PeliculaId == id))
+            {
+                promedioVoto = await context.Rating.Where(x => x.PeliculaId == id)
+                    .AverageAsync(x => x.Puntuacion); // AverageAsync es para obtener el promedio
+                if (HttpContext.User.Identity.IsAuthenticated) // compruebo que el usuario esté autenticado
+                {
+                    var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "email").Value; // obenter informacion del usu
+                    var usuario = await userManager.FindByEmailAsync(email);
+                    var usuarioId = usuario.Id;
+                    var ratingDB = await context.Rating.FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.PeliculaId == id);
+                    if (ratingDB != null)
+                    {
+                        usuarioVoto = ratingDB.Puntuacion;
+                    }
+
+                }
+                
+            }
+
             var dto = mapper.Map<PeliculaDTO>(pelicula);
+            dto.VotoUsuario = usuarioVoto;
+            dto.PromedioVoto = promedioVoto;
             dto.Actores = dto.Actores.OrderBy(x => x.Orden).ToList();
             return dto;
         }
      
     [HttpGet("filtrar")]
-    public async Task<ActionResult<List<PeliculaDTO>>> Filtrar([FromQuery] PeliculasFiltrarDTO peliculasFiltrarDTO)
+        [AllowAnonymous]
+        public async Task<ActionResult<List<PeliculaDTO>>> Filtrar([FromQuery] PeliculasFiltrarDTO peliculasFiltrarDTO)
         {
             var peliculasQueryable = context.Peliculas.AsQueryable();
             if (!string.IsNullOrEmpty(peliculasFiltrarDTO.Titulo))

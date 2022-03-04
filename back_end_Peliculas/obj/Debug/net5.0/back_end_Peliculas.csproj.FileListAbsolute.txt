@@ -78,3 +78,4 @@ D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debu
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.pdb
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.genruntimeconfig.cache
 D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\obj\Debug\net5.0\back_end_Peliculas.csproj.AssemblyReference.cache
+D:\Angular_curso\AngularPeliculas\back_end_Peliculas\back_end_Peliculas\bin\Debug\net5.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

@@ -7,19 +7,23 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NetTopologySuite;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace back_end_Peliculas
@@ -28,6 +32,7 @@ namespace back_end_Peliculas
     {
         public Startup(IConfiguration configuration)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             Configuration = configuration;
         }
 
@@ -65,8 +70,35 @@ namespace back_end_Peliculas
                 builder.WithOrigins(frontend_Url).AllowAnyMethod().AllowAnyHeader()
                 .WithExposedHeaders(new string[] { "cantidadtotalRegistros" }); //activar cabeceras para paginacion para que el front end pueda visualizar
             });
-        });
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+           });
+
+            //JWT cuando se implementa el identity
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+         
+           
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer( opciones =>
+                opciones.TokenValidationParameters = new TokenValidationParameters { 
+                ValidateIssuer =false,
+                ValidateAudience = false,
+                ValidateLifetime = true, // tiempo de expiración token
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(Configuration["llavejwt"])),
+                ClockSkew = TimeSpan.Zero //calculo del tiempo
+                });
+
+            // FIN JWT cuando se implementa el identity
+
+            // para obtener rol de los claims
+            services.AddAuthorization(opciones =>
+            {
+                opciones.AddPolicy("EsAdmin", policy => policy.RequireClaim("role", "admin"));
+            });
+            //
+
             services.AddControllers(options =>{
                 options.Filters.Add(typeof(FiltroDeExcepcion));// aqui voy a agregar mi filtro global
             }); 
