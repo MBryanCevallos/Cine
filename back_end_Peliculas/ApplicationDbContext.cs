@@ -1,4 +1,5 @@
 ﻿using back_end_Peliculas.Entidades;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace back_end_Peliculas
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext //DbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -24,7 +25,7 @@ namespace back_end_Peliculas
             modelBuilder.Entity<PeliculasCines>()
                .HasKey(x => new { x.CineID, x.PeliculaId });
 
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder); // una vez aplicado el identityDbContext tenemos que asegurar que esta linea esté
         }
         public DbSet<Genero> Generos { get; set; } // DbSet es par indicar que tablas quiero en mi BDD / calse Genero y nombre de la tabla Generos
         public DbSet<Actor> Actores { get; set; }
@@ -34,6 +35,7 @@ namespace back_end_Peliculas
         public DbSet<PeliculasActores> PeliculasActores { get; set; } // nombre de la tabla en la bdd
         public DbSet<PeliculasGeneros> PeliculasGeneros { get; set; } // nombre de la tabla en la bdd
         public DbSet<PeliculasCines> PeliculasCines { get; set; } // nombre de la tabla en la bdd
+        public DbSet<Rating> Rating { get; set; } // rating me gustas votos
 
     }
 }

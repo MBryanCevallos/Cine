@@ -2,6 +2,8 @@
 using back_end_Peliculas.DTOs;
 using back_end_Peliculas.Entidades;
 using back_end_Peliculas.Utilidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +15,7 @@ namespace back_end_Peliculas.Controllers
 {
     [ApiController]
     [Route("api/cines")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")] // para que solo usuario administrador puedan usar el endpoint
     public class CinesController : ControllerBase
     {
         private readonly ApplicationDbContext context;
